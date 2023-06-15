@@ -26,4 +26,4 @@ jobs:
             npm run test
             npm run test:e2e
             sudo npm run build
-            pm2 reload 0
+            pm2 reload 1

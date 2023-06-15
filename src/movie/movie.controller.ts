@@ -5,6 +5,11 @@ import { MovieService } from './movie.service';
 export class MovieController {
   constructor(private movieService: MovieService) {}
 
+  @Get()
+  hello() {
+    return true;
+  }
+
   @Get('/:movieId')
   getMovieById(@Param() { movieId }) {
     return this.movieService.getMovieById(movieId);
