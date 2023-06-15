@@ -3,7 +3,13 @@ import { load } from 'cheerio';
 import { BoxOfficeDto } from 'src/dtos/box-office.dto';
 import { MovieService } from 'src/movie/movie.service';
 import { getHtml, movieIdExtractor } from 'src/utils';
-import { URL_BOX_OFFICE } from 'src/values/constant';
+import {
+  URL_250_MOVIE,
+  URL_250_TV_SHOW,
+  URL_BOX_OFFICE,
+  URL_MOST_POPULAR_MOVIE,
+  URL_MOST_POPULAR_TV_SHOW,
+} from 'src/values/constant';
 
 const movie: BoxOfficeDto = {
   id: '',
@@ -39,5 +45,37 @@ export class SpecialListService {
       boxOffice.push(movie);
     });
     return boxOffice;
+  }
+
+  async getMovieList(url: string) {
+    const movieList = [];
+    const popularMoviePage = await getHtml(url);
+    if (!popularMoviePage) throw new NotFoundException();
+    const $ = load(popularMoviePage.data);
+    $('tr').each((i, element) => {
+      if (i === 0) return;
+      const movie = {
+        title: '',
+        poster: '',
+        link: '',
+        year: '',
+        rating: '',
+        movieId: '',
+      };
+      const movieId = movieIdExtractor($(element).find('a').attr('href'));
+      movie.title = $(element).find('td.titleColumn a ').text();
+      movie.poster = $(element).find('td.posterColumn img').attr('src');
+      movie.link = 'https://imdb.com/title/' + movieId;
+      movie.year = $(element)
+        .find('td.titleColumn')
+        .find('span.secondaryInfo')
+        .text()
+        .split(')')[0]
+        .replace('(', '');
+      movie.rating = $(element).find('td.imdbRating strong').text();
+      movie.movieId = movieId;
+      movieList.push(movie);
+    });
+    return movieList;
   }
 }
