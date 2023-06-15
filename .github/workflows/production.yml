@@ -1,0 +1,29 @@
+name: Deplo server nest to ubunto
+on:
+  push:
+    branches: [production]
+jobs:
+  test:
+    name: Run tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v3
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy using ssh
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: 22
+          script: |
+            cd ~/imdb-scrapper-nest
+            git pull origin production
+            npm install --force
+            npm run test
+            npm run test:e2e
+            sudo npm run build
+            pm2 reload 0
