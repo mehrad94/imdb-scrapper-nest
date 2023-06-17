@@ -3,13 +3,9 @@ import { load } from 'cheerio';
 import { BoxOfficeDto } from 'src/dtos/box-office.dto';
 import { MovieService } from 'src/movie/movie.service';
 import { getHtml, movieIdExtractor } from 'src/utils';
-import {
-  URL_250_MOVIE,
-  URL_250_TV_SHOW,
-  URL_BOX_OFFICE,
-  URL_MOST_POPULAR_MOVIE,
-  URL_MOST_POPULAR_TV_SHOW,
-} from 'src/values/constant';
+import { URL_BOX_OFFICE, URL_POPULAR_TRAILER } from 'src/values/constant';
+import { writeFileSync } from 'fs';
+import fetchHTML from 'src/utils/fetchHtml';
 
 const movie: BoxOfficeDto = {
   id: '',
@@ -77,5 +73,23 @@ export class SpecialListService {
       movieList.push(movie);
     });
     return movieList;
+  }
+
+  async getLatestNews() {
+    const latestClip = [];
+    const latestPage = await getHtml('https://www.imdb.com/originals');
+    if (!latestPage) throw new NotFoundException();
+    const $ = load(latestPage.data);
+    $('div[data-testid="shoveler-items-container"]')
+      .children()
+      .each((i, el) => {
+        latestClip.push({
+          banner: $(el).find('img').attr('src'),
+          title: $(el).find('div.ipc-slate-card__title-text').text(),
+          link: 'https://imdb.com' + $(el).find('a').attr('href'),
+          duration: $(el).find('span').text().split(' ')[1],
+        });
+      });
+    return latestClip;
   }
 }

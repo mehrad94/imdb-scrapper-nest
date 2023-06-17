@@ -35,4 +35,9 @@ export class SpecialListController {
   async getMostPopularTvShow() {
     return this.specialListService.getMovieList(URL_MOST_POPULAR_TV_SHOW);
   }
+
+  @Get('/latest')
+  async getLatestNews() {
+    return this.specialListService.getLatestNews();
+  }
 }
