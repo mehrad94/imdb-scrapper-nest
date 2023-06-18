@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const headers = {
   'User-Agent':
-    'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0; KTXN B661806394A77455T1297416P1) like Gecko',
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36',
 };
 
 async function getHtml(url: string) {
