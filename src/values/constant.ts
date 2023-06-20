@@ -1,4 +1,4 @@
-export const URL_MOVIE_IMAGES = '';
+export const URL_GENRE = 'https://www.imdb.com/feature/genre';
 export const URL_MOST_POPULAR_MOVIE = 'https://www.imdb.com/chart/moviemeter';
 export const URL_MOST_POPULAR_TV_SHOW = 'https://www.imdb.com/chart/tvmeter';
 export const URL_250_TV_SHOW = 'https://www.imdb.com/chart/toptv';
