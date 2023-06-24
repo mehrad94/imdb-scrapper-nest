@@ -19,7 +19,7 @@ export class MovieService {
       pg: '',
       duration: '',
       directors: [],
-      writes: [],
+      writers: [],
       casts: [],
       genres: [],
       storyline: '',
@@ -49,7 +49,7 @@ export class MovieService {
     $(creatorData[1])
       .find('li')
       .each((t, tel) => {
-        movieInfo.writes.push($(tel).children().text());
+        movieInfo.writers.push($(tel).children().text());
       });
 
     // ========================== Casts
