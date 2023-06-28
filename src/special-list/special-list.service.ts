@@ -1,11 +1,13 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { load } from 'cheerio';
 import { BoxOfficeDto } from 'src/dtos/box-office.dto';
 import { MovieService } from 'src/movie/movie.service';
 import { getHtml, movieIdExtractor } from 'src/utils';
-import { URL_BOX_OFFICE, URL_POPULAR_TRAILER } from 'src/values/constant';
-import { writeFileSync } from 'fs';
-import fetchHTML from 'src/utils/fetchHtml';
+import { URL_BOX_OFFICE } from 'src/values/constant';
 
 const movie: BoxOfficeDto = {
   id: '',
@@ -23,7 +25,7 @@ export class SpecialListService {
 
   async getBoxOffice() {
     const moviePage = await getHtml(URL_BOX_OFFICE);
-    if (!moviePage) throw new NotFoundException();
+    if (!moviePage) throw new InternalServerErrorException();
     const $ = load(moviePage.data);
     const boxOffice = [];
     $('tr').each((i, element) => {
@@ -40,13 +42,15 @@ export class SpecialListService {
       movie.url = `https://imdb.com/title/${movieId}`;
       boxOffice.push(movie);
     });
+    if (boxOffice.length <= 0) throw new NotFoundException();
+
     return boxOffice;
   }
 
   async getMovieList(url: string) {
     const movieList = [];
     const popularMoviePage = await getHtml(url);
-    if (!popularMoviePage) throw new NotFoundException();
+    if (!popularMoviePage) throw new InternalServerErrorException();
     const $ = load(popularMoviePage.data);
     $('tr').each((i, element) => {
       if (i === 0) return;
@@ -72,13 +76,14 @@ export class SpecialListService {
       movie.movieId = movieId;
       movieList.push(movie);
     });
+    if (movieList.length <= 0) throw new NotFoundException();
     return movieList;
   }
 
   async getLatestNews() {
     const latestClip = [];
     const latestPage = await getHtml('https://www.imdb.com/originals');
-    if (!latestPage) throw new NotFoundException();
+    if (!latestPage) throw new InternalServerErrorException();
     const $ = load(latestPage.data);
     $('div[data-testid="shoveler-items-container"]')
       .children()
@@ -90,6 +95,7 @@ export class SpecialListService {
           duration: $(el).find('span').text().split(' ')[1],
         });
       });
+    if (latestClip.length <= 0) throw new NotFoundException();
     return latestClip;
   }
 }

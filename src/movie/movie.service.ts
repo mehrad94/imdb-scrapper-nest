@@ -130,7 +130,9 @@ export class MovieService {
     const posterPage = await getHtml(posterUrl);
     if (!posterPage) throw new NotFoundException();
     const _$ = load(posterPage.data);
-    return { path: _$('div.kEDMKk img').attr('src') };
+    const path = _$('div.kEDMKk img').attr('src');
+    if (!path) throw new NotFoundException();
+    return { path };
   }
 
   async searchMulti(query: string) {
@@ -184,6 +186,8 @@ export class MovieService {
         });
         searchResult.titles.push(newTitle);
       });
+    if (searchResult.people.length <= 0 || searchResult.titles.length <= 0)
+      throw new NotFoundException();
     return searchResult;
   }
 }

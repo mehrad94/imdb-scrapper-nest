@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { load } from 'cheerio';
 import { getHtml } from 'src/utils';
 import { URL_GENRE } from 'src/values/constant';
@@ -8,7 +12,7 @@ export class UtilityService {
   async getAllMovieGenre() {
     const genres = [];
     const genrePage = await getHtml(URL_GENRE);
-    if (!genrePage) throw new NotFoundException();
+    if (!genrePage) throw new InternalServerErrorException();
     const $ = load(genrePage.data);
     $('a[href*="' + 'ft_movie' + '"]').each((i, el) => {
       const genreInfo = { title: '', link: '' };
@@ -16,12 +20,13 @@ export class UtilityService {
       genreInfo.title = $(el).find('span').text();
       genres.push(genreInfo);
     });
+    if (genres.length <= 0) throw new NotFoundException();
     return genres;
   }
   async getAllTvShowGenre() {
     const genres = [];
     const genrePage = await getHtml(URL_GENRE);
-    if (!genrePage) throw new NotFoundException();
+    if (!genrePage) throw new InternalServerErrorException();
     const $ = load(genrePage.data);
     $('a[href*="' + 'ft_tv' + '"]').each((i, el) => {
       const genreInfo = { title: '', link: '' };
@@ -29,6 +34,7 @@ export class UtilityService {
       genreInfo.title = $(el).find('span').text();
       genres.push(genreInfo);
     });
+    if (genres.length <= 0) throw new NotFoundException();
     return genres;
   }
 }
