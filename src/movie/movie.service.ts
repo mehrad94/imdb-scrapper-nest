@@ -110,11 +110,17 @@ export class MovieService {
       );
     });
 
+    // ========================== released date
+    console.log({
+      Mehrad: $($('a[href*="' + 'releaseinfo?' + '"]')[2]).text(),
+    });
     movieInfo.storyline = storyline;
     movieInfo.poster = $('img.ipc-image').attr('src');
     movieInfo.movieTitle = $('h1[data-testid=hero__pageTitle] span').text();
     movieInfo.rating = $(ratingInfo[0]).text();
-    movieInfo.releasedYear = $(presentationInfo[0]).text();
+    movieInfo.releasedYear = $(
+      $('a[href*="' + 'releaseinfo?' + '"]')[2],
+    ).text();
     movieInfo.pg = $(presentationInfo[1]).text();
     movieInfo.duration = $(presentationInfo[2]).text();
     return movieInfo;
