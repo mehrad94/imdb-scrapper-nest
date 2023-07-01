@@ -82,8 +82,8 @@ export class MovieService {
     });
 
     // ========================== Storyline
-    const storyline = $('span.sc-cd57914c-2.cXtXlS').text();
-
+    // const storyline = $('span.sc-cd57914c-2.cXtXlS').text();
+    const storyline = $($('p[data-testid="plot"] span')[2]).text();
     // ========================== MoreLikeThis
     $('section[data-testid="MoreLikeThis"]')
       .find('div[data-testid="shoveler-items-container"]')
@@ -111,9 +111,6 @@ export class MovieService {
     });
 
     // ========================== released date
-    console.log({
-      Mehrad: $($('a[href*="' + 'releaseinfo?' + '"]')[2]).text(),
-    });
     movieInfo.storyline = storyline;
     movieInfo.poster = $('img.ipc-image').attr('src');
     movieInfo.movieTitle = $('h1[data-testid=hero__pageTitle] span').text();
